@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request
 
-# This tells Flask to look for templates in the same folder as this script
+
 base_dir = os.path.abspath(os.path.dirname(__file__))
 template_dir = os.path.join(base_dir, 'templates')
 
@@ -19,14 +19,12 @@ def index():
     if request.method == 'POST':
         target_url = request.form.get('url')
         try:
-            # Adding a User-Agent makes the request look like a real browser
             headers = {'User-Agent': 'Mozilla/5.0'}
             response = requests.get(target_url, headers=headers, timeout=5)
             
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
                 
-                # Logic: Extracting all headlines and links
                 headlines = [h.text.strip() for h in soup.find_all(['h1', 'h2', 'h3'])[:10]]
                 links = [a['href'] for a in soup.find_all('a', href=True)[:10]]
                 
